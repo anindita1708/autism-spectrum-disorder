@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASD Detection System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #a5b4fc;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #3b82f6;
+            --gray: #94a3b8;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f6f7ff 0%, #e3e5ff 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .logo {
+            display: inline-block;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .logo i {
+            font-size: 48px;
+            color: var(--primary);
+            background: var(--light);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+            margin-bottom: 30px;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+        }
+
+        .card-header {
+            background: var(--primary);
+            color: white;
+            padding: 20px 25px;
+            border-top-left-radius: var(--radius);
+            border-top-right-radius: var(--radius);
+            position: relative;
+        }
+
+        .card-header h2 {
+            font-size: 22px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--primary-light);
+            border-radius: var(--radius);
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: rgba(165, 180, 252, 0.05);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(165, 180, 252, 0.1);
+        }
+
+        .upload-area .icon {
+            font-size: 50px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-area:hover .icon {
+            transform: scale(1.1);
+        }
+
+        .upload-area h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .upload-area p {
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .upload-area input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary-light);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9ff;
+            color: var(--primary-dark);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-wide {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* Preview */
+        .preview-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .preview-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .preview-title h3 {
+            color: var(--dark);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preview-box {
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .preview-meta {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 10px;
+        }
+
+        /* Progress */
+        .progress-container {
+            margin: 25px 0;
+            display: none;
+        }
+
+        .progress-container p {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .progress {
+            height: 8px;
+            background-color: rgba(99, 102, 241, 0.1);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            border-radius: 50px;
+            transition: width 0.5s ease;
+        }
+
+        /* Results */
+        .result-card {
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-top: 30px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .result-header {
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--success);
+            color: white;
+        }
+
+        .result-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+        }
+
+        .result-header .badge {
+            background: rgba(255,255,255,0.2);
+            font-size: 14px;
+            padding: 5px 12px;
+            border-radius: 50px;
+        }
+
+        .result-body {
+            padding: 25px;
+            background: white;
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+        }
+
+        .result-item h4 {
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 16px;
+        }
+
+        .progress-value {
+            height: 8px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 50px;
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 50px;
+            transition: width 1s ease;
+        }
+
+        .result-status {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .result-status span:first-child {
+            font-weight: 500;
+        }
+
+        .result-message {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 15px;
+        }
+
+        /* Info Card */
+        .info-card {
+            padding: 30px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.1);
+            margin-top: 40px;
+        }
+
+        .info-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--info);
+            font-size: 24px;
+        }
+
+        .info-title h3 {
+            font-weight: 600;
+            font-size: 20px;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .info-title p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .info-content p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        .info-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .info-content ul li {
+            margin-bottom: 8px;
+        }
+
+        .info-disclaimer {
+            background: rgba(239, 68, 68, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--danger);
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .info-disclaimer strong {
+            color: var(--danger);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Utility Classes */
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-between {
+            justify-content: space-between;
+        }
+
+        .gap-10 {
+            gap: 10px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cards-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .card {
+                width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .upload-area {
+                padding: 25px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h1>Autism Spectrum Detection</h1>
+            <p class="subtitle">Advanced AI-powered facial analysis for autism spectrum disorder screening</p>
+        </header>
+
+        <div class="cards-container">
+            <!-- Upload Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-camera"></i> Image Analysis</h2>
+                    <p>Upload a clear facial image for processing</p>
+                </div>
+                <div class="card-body">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="upload-area" id="dropArea">
+                            <i class="fas fa-cloud-upload-alt icon"></i>
+                            <h3>Drop your image here</h3>
+                            <p>Or click to browse from your device</p>
+                            <span class="btn btn-secondary">
+                                <i class="fas fa-file-image"></i> Select Image
+                            </span>
+                            <input type="file" id="imageInput" name="image" accept="image/*">
+                        </div>
+                        
+                        <div class="preview-container" id="previewContainer">
+                            <div class="preview-title">
+                                <h3><i class="fas fa-image"></i> Selected Image</h3>
+                                <button type="button" class="btn btn-secondary" id="changeImage">
+                                    <i class="fas fa-sync-alt"></i> Change
+                                </button>
+                            </div>
+                            <div class="preview-box">
+                                <img id="preview" src="" alt="Image preview">
+                                <div class="preview-meta">
+                                    <span id="fileName">image.jpg</span>
+                                    <span id="fileSize">0 KB</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container" id="progressContainer">
+                            <p>
+                                <span>Processing image...</span>
+                                <span id="progressPercent">0%</span>
+                            </p>
+                            <div class="progress">
+                                <div class="progress-bar"></div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-wide" id="analyzeBtn">
+                            <i class="fas fa-search"></i> Analyze Image
+                        </button>
+                    </form>
+                    
+                    <div class="result-card" id="resultCard">
+                        <div class="result-header" id="resultHeader">
+                            <h3><i class="fas fa-chart-pie"></i> Analysis Results</h3>
+                            <span class="badge" id="resultBadge">Completed</span>
+                        </div>
+                        <div class="result-body">
+                            <div class="result-item">
+                                <h4>ASD Probability</h4>
+                                <div class="progress-value">
+                                    <div class="progress-fill" id="scoreBar"></div>
+                                </div>
+                                <div class="result-status">
+                                    <span id="scoreValue">0%</span>
+                                    <span id="scoreLevel">Low</span>
+                                </div>
+                            </div>
+                            
+                            <div class="result-item">
+                                <h4>Confidence Level</h4>
+                                <div class="progress-value">
+                                    <div class="progress-fill" id="confidenceBar"></div>
+                                </div>
+                                <div class="result-status">
+                                    <span id="confidenceValue">0%</span>
+                                    <span>Confidence</span>
+                                </div>
+                            </div>
+                            
+                            <div class="result-message" id="assessmentMessage">
+                                Assessment will appear here after analysis.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-info-circle"></i> About This Tool</h2>
+                    <p>How our ASD detection works</p>
+                </div>
+                <div class="card-body">
+                    <div class="info-header">
+                        <div class="info-icon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="info-title">
+                            <h3>Understanding ASD Detection</h3>
+                            <p>Using AI for early screening</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-content">
+                        <p>This tool uses advanced computer vision and machine learning algorithms to analyze facial features that may be associated with Autism Spectrum Disorder (ASD). The analysis is based on scientific research on facial markers and provides a probability score.</p>
+                        
+                        <p>Our system analyzes:</p>
+                        <ul>
+                            <li>Facial symmetry patterns</li>
+                            <li>Eye region characteristics</li>
+                            <li>Facial feature proportions</li>
+                            <li>Other clinically researched biomarkers</li>
+                        </ul>
+                        
+                        <p>The technology behind this tool has been developed based on research studies that have identified correlations between certain facial features and ASD. Our machine learning model has been trained on diverse datasets to improve accuracy across different ethnicities, ages, and genders.</p>
+                        
+                        <div class="info-disclaimer">
+                            <strong>Important Medical Disclaimer</strong>
+                            <p>This tool is designed for screening purposes only and should not replace professional medical diagnosis. A healthcare professional should be consulted for proper evaluation, diagnosis, and treatment recommendations. No computer analysis can substitute for clinical judgment.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <p>© 2025 ASD Detection System | Privacy Policy | Terms of Use</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const uploadForm = document.getElementById('uploadForm');
+            const imageInput = document.getElementById('imageInput');
+            const preview = document.getElementById('preview');
+            const dropArea = document.getElementById('dropArea');
+            const previewContainer = document.getElementById('previewContainer');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.querySelector('.progress-bar');
+            const progressPercent = document.getElementById('progressPercent');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const changeImageBtn = document.getElementById('changeImage');
+            const resultCard = document.getElementById('resultCard');
+            const resultHeader = document.getElementById('resultHeader');
+            const resultBadge = document.getElementById('resultBadge');
+            const scoreBar = document.getElementById('scoreBar');
+            const scoreValue = document.getElementById('scoreValue');
+            const scoreLevel = document.getElementById('scoreLevel');
+            const confidenceBar = document.getElementById('confidenceBar');
+            const confidenceValue = document.getElementById('confidenceValue');
+            const assessmentMessage = document.getElementById('assessmentMessage');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            
+            // Handle file selection
+            imageInput.addEventListener('change', function() {
+                handleFileSelect(this.files[0]);
+            });
+            
+            // Drag and drop functionality
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+    dropArea.style.borderColor = primaryColor;
+    dropArea.style.backgroundColor = 'rgba(165, 180, 252, 0.2)';
+}
+
+function unhighlight() {
+    const primaryLightColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-light').trim();
+    dropArea.style.borderColor = primaryLightColor;
+    dropArea.style.backgroundColor = 'rgba(165, 180, 252, 0.05)';
+}
+            
+            dropArea.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const file = dt.files[0];
+                handleFileSelect(file);
+            });
+            
+            // Change image button
+            changeImageBtn.addEventListener('click', function() {
+                previewContainer.style.display = 'none';
+                resultCard.style.display = 'none';
+                imageInput.value = '';
+                analyzeBtn.disabled = true;
+            });
+            
+            // Handle file selection
+            function handleFileSelect(file) {
+                if (!file) return;
+                
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Please select a valid image file (JPEG, JPG or PNG)');
+                    return;
+                }
+                
+                // Display file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                
+                // Preview image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    analyzeBtn.disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // Format file size
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' bytes';
+                else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                else return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+            
+            // Handle form submission
+            uploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!imageInput.files[0]) {
+                    alert('Please select an image first');
+                    return;
+                }
+                
+                // Show progress
+                progressContainer.style.display = 'block';
+                analyzeBtn.disabled = true;
+                resetProgress();
+                resultCard.style.display = 'none';
+                
+                const formData = new FormData(this);
+                
+                // Simulate progress
+                let progress = 0;
+                const interval = setInterval(function() {
+                    if (progress >= 90) {
+                        clearInterval(interval);
+                    } else {
+                        progress += Math.random() * 10;
+                        if (progress > 90) progress = 90;
+                        updateProgress(progress);
+                    }
+                }, 300);
+                
+                // Send to backend
+                fetch('process.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Complete progress
+                    clearInterval(interval);
+                    updateProgress(100);
+                    
+                    setTimeout(function() {
+                        progressContainer.style.display = 'none';
+                        displayResults(data);
+                        analyzeBtn.disabled = false;
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    clearInterval(interval);
+                    updateProgress(100);
+                    
+                    setTimeout(function() {
+                        progressContainer.style.display = 'none';
+                        displayError("There was a problem processing your request. Please try again.");
+                        analyzeBtn.disabled = false;
+                    }, 500);
+                });
+            });
+            
+            // Update progress bar
+            function updateProgress(value) {
+                progressBar.style.width = value + '%';
+                progressPercent.textContent = Math.round(value) + '%';
+            }
+            
+            // Reset progress
+            function resetProgress() {
+                progressBar.style.width = '0%';
+                progressPercent.textContent = '0%';
+            }
+            
+            // Display results
+            function displayResults(data) {
+                if (data.error) {
+                    displayError(data.error);
+                    return;
+                }
+                
+                const score = data.score;
+                const confidence = data.confidence;
+                
+                // Update score display
+                scoreBar.style.width = (score * 100) + '%';
+                scoreValue.textContent = (score * 100).toFixed(1) + '%';
+                
+                // Update confidence display
+                confidenceBar.style.width = (confidence * 100) + '%';
+                confidenceValue.textContent = (confidence * 100).toFixed(1) + '%';
+                
+                // Set assessment message
+                assessmentMessage.textContent = data.assessment;
+                
+                // Set colors based on score
+                if (score > 0.7) {
+                    scoreBar.style.backgroundColor = '#ef4444'; // Red
+                    scoreLevel.textContent = 'High';
+                    resultHeader.style.backgroundColor = '#ef4444';
+                } else if (score > 0.4) {
+                    scoreBar.style.backgroundColor = '#f59e0b'; // Yellow
+                    scoreLevel.textContent = 'Moderate';
+                    resultHeader.style.backgroundColor = '#f59e0b';
+                } else {
+                    scoreBar.style.backgroundColor = '#10b981'; // Green
+                    scoreLevel.textContent = 'Low';
+                    resultHeader.style.backgroundColor = '#10b981';
+                }
+                
+                // Set confidence color
+                confidenceBar.style.backgroundColor = score > 0.7 ? '#ef4444' : score > 0.4 ? '#f59e0b' : '#10b981';
+                
+                // Show result card with animation
+                resultCard.style.display = 'block';
+                resultCard.style.opacity = 0;
+                setTimeout(() => {
+                    resultCard.style.opacity = 1;
+                }, 10);
+            }
+            
+            // Display error
+            function displayError(message) {
+                resultHeader.style.backgroundColor = '#ef4444';
+                resultBadge.textContent = 'Error';
+                
+                scoreBar.style.width = '0%';
+                scoreValue.textContent = 'N/A';
+                scoreLevel.textContent = 'N/A';
+                
+                confidenceBar.style.width = '0%';
+                confidenceValue.textContent = 'N/A';
+                
+                assessmentMessage.textContent = message;
+                assessmentMessage.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                assessmentMessage.style.borderLeftColor = '#ef4444';
+                
+                resultCard.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
